@@ -26,6 +26,7 @@ export default function AddMeal() {
   const [editingMeal, setEditingMeal] = useState<any | null>(null);
   const [aiMeal, setAiMeal] = useState<string | null>(null);
 const [aiMealDetails, setAiMealDetails] = useState<any | null>(null);
+const [loadingAi, setLoadingAi] = useState(false);
 
 
   // Fetch meals live
@@ -41,15 +42,27 @@ const [aiMealDetails, setAiMealDetails] = useState<any | null>(null);
     return () => unsub();
   }, []);
 const handleGenerateAiMeal = async () => {
-  const res = await fetch("/api/ai-meal", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ type }),
-  });
+  try {
+    setLoadingAi(true);
+    setAiMeal(null); // clear previous result
 
-  const data = await res.json();
-  console.log("AI Meal Response:", data);
+    const res = await fetch("/api/ai-meal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type }),
+    });
+
+    const data = await res.json();
+    setAiMeal(data.recipe);
+  } catch (err) {
+    console.error("AI Meal Error:", err);
+  } finally {
+    setLoadingAi(false);
+  }
 };
+
+
+
 
 
 
@@ -123,16 +136,22 @@ const handleUpdateMeal = async () => {
 };
 
 
-  return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 dark:text-white p-6">
-      <BackButton />
+return (
+  <div className="min-h-screen bg-white dark:bg-gray-900 dark:text-white p-6">
+    <BackButton />
 
-      <h1 className="text-3xl font-bold mb-6 text-green-700 dark:text-green-300">
-        {editingMeal ? "Edit Meal" : "Add New Meal"}
-      </h1>
+    {/* PAGE TITLE */}
+    <h1 className="text-3xl font-bold mb-6 text-green-700 dark:text-green-300">
+      {editingMeal ? "Edit Meal" : "Add New Meal"}
+    </h1>
 
-      {/* Add/Edit Meal Form */}
-      <div className="space-y-4 max-w-md mb-10">
+    {/* --- MAIN GRID: LEFT = ADD MEAL, RIGHT = AI MEAL --- */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+      {/* ---------------- LEFT: ADD MEAL FORM ---------------- */}
+      <div className="space-y-4 max-w-md">
+        <h2 className="text-2xl font-bold mb-4">Manual Meal Entry</h2>
+
         <input
           type="text"
           placeholder="Meal name"
@@ -154,7 +173,7 @@ const handleUpdateMeal = async () => {
 
         <input
           type="text"
-          placeholder="Category (e.g., Kerala, South Indian)"
+          placeholder="Category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           className="w-full p-3 rounded bg-gray-100 dark:bg-gray-800"
@@ -207,90 +226,94 @@ const handleUpdateMeal = async () => {
             Add Meal
           </button>
         )}
-<button
-  onClick={() => handleGenerateAiMeal()}
-  className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700"
->
-  Generate AI Meal
-</button>
 
         {message && (
           <p className="text-green-500 dark:text-green-300">{message}</p>
         )}
       </div>
 
-      {/* Display Meals */}
-      <h2 className="text-2xl font-bold mb-4">Meals Added</h2>
+    
+    {/* ---------------- RIGHT: AI MEAL GENERATOR ---------------- */}
+<div>
+  <h2 className="text-2xl font-bold mb-4">AI Meal Generator</h2>
 
-      {meals.length === 0 ? (
-        <p className="text-gray-500">No meals added yet.</p>
-      ) : (
-        <ul className="space-y-3">
-          {meals.map((meal) => (
-            <li
-              key={meal.id}
-              className="p-4 border rounded-lg bg-gray-100 dark:bg-gray-800"
-            >
-              <p className="font-semibold">{meal.name}</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Type: {meal.type}
-              </p>
-              <p className="text-sm">Category: {meal.category}</p>
-              <p className="text-sm">Calories: {meal.calories}</p>
+  <button
+    onClick={handleGenerateAiMeal}
+    disabled={loadingAi}
+    className={`px-4 py-2 rounded-lg shadow text-white 
+      ${loadingAi ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"}`}
+  >
+    {loadingAi ? "Generating..." : "Generate AI Meal"}
+  </button>
 
-              <div className="flex gap-3 mt-3">
-                <button
-                  onClick={() => handleEdit(meal)}
-                  className="px-3 py-1 bg-blue-600 text-white rounded"
-                >
-                  Edit
-                </button>
+  {/* Loading Spinner */}
+  {loadingAi && (
+    <div className="mt-6 flex items-center gap-3 text-purple-600 dark:text-purple-300">
+      <div className="animate-spin h-6 w-6 border-4 border-purple-400 border-t-transparent rounded-full"></div>
+      <p className="text-lg font-medium">Creating your recipe…</p>
+    </div>
+  )}
 
-                <button
-                  onClick={() => handleDelete(meal.id)}
-                  className="px-3 py-1 bg-red-600 text-white rounded"
-                >
-                  Delete
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-      {aiMealDetails && (
-  <div className="mt-6 p-4 bg-purple-100 dark:bg-purple-800 rounded-lg">
-    <h2 className="text-xl font-bold mb-2">AI Generated Meal</h2>
+  {/* AI Result */}
+  {aiMeal && !loadingAi && (
+    <div className="mt-6 p-4 bg-purple-100 dark:bg-purple-800 rounded-lg animate-fadeIn">
+      <h3 className="text-xl font-bold mb-2">AI Generated Recipe</h3>
 
-    <p className="font-semibold">{aiMealDetails.name}</p>
-    <p className="text-sm">{aiMealDetails.description}</p>
+      <pre className="whitespace-pre-wrap text-sm leading-relaxed">
+        {aiMeal}
+      </pre>
 
-    <div className="mt-3">
-      <p>Category: {aiMealDetails.category}</p>
-      <p>Calories: {aiMealDetails.calories}</p>
-      <p>Protein: {aiMealDetails.protein} g</p>
-      <p>Carbs: {aiMealDetails.carbs} g</p>
-      <p>Fat: {aiMealDetails.fat} g</p>
+      <button
+        onClick={() => setName(aiMeal.split("\n")[0])}
+        className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
+      >
+        Use Recipe Name
+      </button>
+    </div>
+  )}
+</div>
+
     </div>
 
-    <button
-      onClick={() =>
-        addDoc(collection(db, "meals"), {
-          name: aiMealDetails.name,
-          type,
-          category: aiMealDetails.category,
-          calories: aiMealDetails.calories,
-          protein: aiMealDetails.protein,
-          carbs: aiMealDetails.carbs,
-          fat: aiMealDetails.fat,
-        })
-      }
-      className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
-    >
-      Save AI Meal
-    </button>
+    {/* ---------------- LIST OF MEALS ---------------- */}
+    <h2 className="text-2xl font-bold mt-10 mb-4">Meals Added</h2>
+
+    {meals.length === 0 ? (
+      <p className="text-gray-500">No meals added yet.</p>
+    ) : (
+      <ul className="space-y-3">
+        {meals.map((meal) => (
+          <li
+            key={meal.id}
+            className="p-4 border rounded-lg bg-gray-100 dark:bg-gray-800"
+          >
+            <p className="font-semibold">{meal.name}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Type: {meal.type}
+            </p>
+            <p className="text-sm">Category: {meal.category}</p>
+            <p className="text-sm">Calories: {meal.calories}</p>
+
+            <div className="flex gap-3 mt-3">
+              <button
+                onClick={() => handleEdit(meal)}
+                className="px-3 py-1 bg-blue-600 text-white rounded"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => handleDelete(meal.id)}
+                className="px-3 py-1 bg-red-600 text-white rounded"
+              >
+                Delete
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )}
   </div>
-)}
+);
 
-    </div>
-  );
 }
