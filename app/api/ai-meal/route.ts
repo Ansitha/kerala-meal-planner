@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     if (!key) {
       return Response.json({ error: "Missing API key" }, { status: 500 });
     }
-
+const { type } = await req.json();
     const response = await fetch(
       "https://generativelanguage.googleapis.com/v1/models/gemini-3.6-flash:generateContent?key=" + key,
       {
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
               role: "user",
               parts: [
                 {
-                  text: "Give me a simple Kerala breakfast recipe as plain text only."
+                  text: `Give me a simple Kerala ${type} recipe as plain text only.`
                 }
               ]
             }
