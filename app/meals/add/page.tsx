@@ -137,174 +137,184 @@ const handleUpdateMeal = async () => {
 
 
 return (
-  <div className="min-h-screen bg-white dark:bg-gray-900 dark:text-white p-6">
+  <div className="min-h-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 dark:text-white p-6">
     <BackButton />
 
     {/* PAGE TITLE */}
-    <h1 className="text-3xl font-bold mb-6 text-green-700 dark:text-green-300">
+    <h1 className="text-3xl font-extrabold mb-8 text-green-700 dark:text-green-300 text-center">
       {editingMeal ? "Edit Meal" : "Add New Meal"}
     </h1>
 
-    {/* --- MAIN GRID: LEFT = ADD MEAL, RIGHT = AI MEAL --- */}
+    {/* MAIN GRID */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
-      {/* ---------------- LEFT: ADD MEAL FORM ---------------- */}
-      <div className="space-y-4 max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Manual Meal Entry</h2>
+      {/* LEFT: MANUAL MEAL ENTRY */}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-green-200 dark:border-gray-700">
+        <h2 className="text-2xl font-bold mb-4 text-green-700 dark:text-green-300">
+          Manual Meal Entry
+        </h2>
 
-        <input
-          type="text"
-          placeholder="Meal name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full p-3 rounded bg-gray-100 dark:bg-gray-800"
-        />
+        <div className="space-y-4">
+          <input
+            type="text"
+            placeholder="Meal name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600"
+          />
 
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className="w-full p-3 rounded bg-gray-100 dark:bg-gray-800"
-        >
-          <option value="breakfast">Breakfast</option>
-          <option value="lunch">Lunch</option>
-          <option value="snacks">Snacks</option>
-          <option value="dinner">Dinner</option>
-        </select>
-
-        <input
-          type="text"
-          placeholder="Category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="w-full p-3 rounded bg-gray-100 dark:bg-gray-800"
-        />
-
-        <input
-          type="number"
-          placeholder="Calories"
-          value={calories}
-          onChange={(e) => setCalories(e.target.value)}
-          className="w-full p-3 rounded bg-gray-100 dark:bg-gray-800"
-        />
-
-        <input
-          type="number"
-          placeholder="Protein (g)"
-          value={protein}
-          onChange={(e) => setProtein(e.target.value)}
-          className="w-full p-3 rounded bg-gray-100 dark:bg-gray-800"
-        />
-
-        <input
-          type="number"
-          placeholder="Carbs (g)"
-          value={carbs}
-          onChange={(e) => setCarbs(e.target.value)}
-          className="w-full p-3 rounded bg-gray-100 dark:bg-gray-800"
-        />
-
-        <input
-          type="number"
-          placeholder="Fat (g)"
-          value={fat}
-          onChange={(e) => setFat(e.target.value)}
-          className="w-full p-3 rounded bg-gray-100 dark:bg-gray-800"
-        />
-
-        {editingMeal ? (
-          <button
-            onClick={handleUpdateMeal}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600"
           >
-            Update Meal
-          </button>
-        ) : (
-          <button
-            onClick={handleAddMeal}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
-          >
-            Add Meal
-          </button>
-        )}
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="snacks">Snacks</option>
+            <option value="dinner">Dinner</option>
+          </select>
 
-        {message && (
-          <p className="text-green-500 dark:text-green-300">{message}</p>
-        )}
+          <input
+            type="text"
+            placeholder="Category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600"
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="number"
+              placeholder="Calories"
+              value={calories}
+              onChange={(e) => setCalories(e.target.value)}
+              className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600"
+            />
+
+            <input
+              type="number"
+              placeholder="Protein (g)"
+              value={protein}
+              onChange={(e) => setProtein(e.target.value)}
+              className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="number"
+              placeholder="Carbs (g)"
+              value={carbs}
+              onChange={(e) => setCarbs(e.target.value)}
+              className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600"
+            />
+
+            <input
+              type="number"
+              placeholder="Fat (g)"
+              value={fat}
+              onChange={(e) => setFat(e.target.value)}
+              className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600"
+            />
+          </div>
+
+          {editingMeal ? (
+            <button
+              onClick={handleUpdateMeal}
+              className="w-full py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
+            >
+              Update Meal
+            </button>
+          ) : (
+            <button
+              onClick={handleAddMeal}
+              className="w-full py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
+            >
+              Add Meal
+            </button>
+          )}
+
+          {message && (
+            <p className="text-green-600 dark:text-green-300 text-center">{message}</p>
+          )}
+        </div>
       </div>
 
-    
-    {/* ---------------- RIGHT: AI MEAL GENERATOR ---------------- */}
-<div>
-  <h2 className="text-2xl font-bold mb-4">AI Meal Generator</h2>
+      {/* RIGHT: AI MEAL GENERATOR */}
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-purple-200 dark:border-gray-700">
+        <h2 className="text-2xl font-bold mb-4 text-purple-700 dark:text-purple-300">
+          AI Meal Generator
+        </h2>
 
-  <button
-    onClick={handleGenerateAiMeal}
-    disabled={loadingAi}
-    className={`px-4 py-2 rounded-lg shadow text-white 
-      ${loadingAi ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"}`}
-  >
-    {loadingAi ? "Generating..." : "Generate AI Meal"}
-  </button>
+        <button
+          onClick={handleGenerateAiMeal}
+          disabled={loadingAi}
+          className={`w-full py-3 rounded-lg shadow text-white transition 
+            ${loadingAi ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"}`}
+        >
+          {loadingAi ? "Generating..." : "Generate AI Meal"}
+        </button>
 
-  {/* Loading Spinner */}
-  {loadingAi && (
-    <div className="mt-6 flex items-center gap-3 text-purple-600 dark:text-purple-300">
-      <div className="animate-spin h-6 w-6 border-4 border-purple-400 border-t-transparent rounded-full"></div>
-      <p className="text-lg font-medium">Creating your recipe…</p>
+        {/* Loading Spinner */}
+        {loadingAi && (
+          <div className="mt-6 flex items-center gap-3 text-purple-600 dark:text-purple-300">
+            <div className="animate-spin h-6 w-6 border-4 border-purple-400 border-t-transparent rounded-full"></div>
+            <p className="text-lg font-medium">Creating your recipe…</p>
+          </div>
+        )}
+
+        {/* AI Result */}
+        {aiMeal && !loadingAi && (
+          <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-900 rounded-xl shadow animate-fadeIn">
+            <h3 className="text-xl font-bold mb-2 text-purple-700 dark:text-purple-300">
+              AI Generated Recipe
+            </h3>
+
+            <pre className="whitespace-pre-wrap text-sm leading-relaxed bg-white dark:bg-gray-800 p-3 rounded-lg border border-purple-200 dark:border-purple-700">
+              {aiMeal}
+            </pre>
+
+            <button
+              onClick={() => setName(aiMeal.split("\n")[0])}
+              className="mt-4 w-full py-3 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
+            >
+              Use Recipe Name
+            </button>
+          </div>
+        )}
+      </div>
     </div>
-  )}
 
-  {/* AI Result */}
-  {aiMeal && !loadingAi && (
-    <div className="mt-6 p-4 bg-purple-100 dark:bg-purple-800 rounded-lg animate-fadeIn">
-      <h3 className="text-xl font-bold mb-2">AI Generated Recipe</h3>
-
-      <pre className="whitespace-pre-wrap text-sm leading-relaxed">
-        {aiMeal}
-      </pre>
-
-      <button
-        onClick={() => setName(aiMeal.split("\n")[0])}
-        className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
-      >
-        Use Recipe Name
-      </button>
-    </div>
-  )}
-</div>
-
-    </div>
-
-    {/* ---------------- LIST OF MEALS ---------------- */}
-    <h2 className="text-2xl font-bold mt-10 mb-4">Meals Added</h2>
+    {/* MEALS LIST */}
+    <h2 className="text-2xl font-bold mt-12 mb-4 text-green-700 dark:text-green-300">
+      Meals Added
+    </h2>
 
     {meals.length === 0 ? (
-      <p className="text-gray-500">No meals added yet.</p>
+      <p className="text-gray-500 dark:text-gray-400">No meals added yet.</p>
     ) : (
-      <ul className="space-y-3">
+      <ul className="space-y-4">
         {meals.map((meal) => (
           <li
             key={meal.id}
-            className="p-4 border rounded-lg bg-gray-100 dark:bg-gray-800"
+            className="p-4 border rounded-xl bg-gray-100 dark:bg-gray-800 shadow"
           >
-            <p className="font-semibold">{meal.name}</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Type: {meal.type}
-            </p>
+            <p className="font-semibold text-lg">{meal.name}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Type: {meal.type}</p>
             <p className="text-sm">Category: {meal.category}</p>
             <p className="text-sm">Calories: {meal.calories}</p>
 
             <div className="flex gap-3 mt-3">
               <button
                 onClick={() => handleEdit(meal)}
-                className="px-3 py-1 bg-blue-600 text-white rounded"
+                className="px-3 py-1 bg-blue-600 text-white rounded-lg shadow"
               >
                 Edit
               </button>
 
               <button
                 onClick={() => handleDelete(meal.id)}
-                className="px-3 py-1 bg-red-600 text-white rounded"
+                className="px-3 py-1 bg-red-600 text-white rounded-lg shadow"
               >
                 Delete
               </button>
@@ -315,5 +325,6 @@ return (
     )}
   </div>
 );
+
 
 }
