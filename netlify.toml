@@ -4,3 +4,5 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+[build.environment]
+SECRETS_SCAN_OMIT_PATHS = ".netlify/.next/cache/**,.next/cache/**"
