@@ -4,7 +4,7 @@ export async function POST(req: Request) {
   try {
     const key = process.env.GEMINI_API_KEY;
     if (!key) {
-      return Response.json({ error: "Missing API key" }, { status: 500 });
+      return NextResponse.json({ error: "Missing API key" }, { status: 500 });
     }
 const { type } = await req.json();
     const response = await fetch(
@@ -33,9 +33,9 @@ const { type } = await req.json();
     const recipe =
       json?.candidates?.[0]?.content?.parts?.[0]?.text || "No recipe found";
 
-    return Response.json({ recipe }, { status: 200 });
+    return NextResponse.json({ recipe }, { status: 200 });
   } catch (err: any) {
-    return Response.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 
